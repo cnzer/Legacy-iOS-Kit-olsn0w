@@ -1,8 +1,14 @@
 """Use SSH options understood by both High Sierra and current OpenSSH clients."""
 import subprocess
+import platform
 
-RSA_OPTIONS = ['-o', 'HostKeyAlgorithms=+ssh-rsa',
-               '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa']
+macos_version = tuple(map(int, platform.mac_ver()[0].split('.')[:3]))
+
+if macos_version[:2] <= (10, 12):
+    RSA_OPTIONS = ['-o', 'HostKeyAlgorithms=ssh-rsa']
+else:
+    RSA_OPTIONS = ['-o', 'HostKeyAlgorithms=+ssh-rsa',
+                   '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa']
 
 
 def known_hosts_option(path):
